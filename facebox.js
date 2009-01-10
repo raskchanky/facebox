@@ -87,6 +87,7 @@
       loadingImage : '/facebox/loading.gif',
       closeImage   : '/facebox/closelabel.gif',
       imageTypes   : [ 'png', 'jpg', 'jpeg', 'gif' ],
+      modal        : false,
       faceboxHtml  : '\
     <div id="facebox" style="display:none;"> \
       <div class="popup"> \
@@ -131,10 +132,14 @@
         left:	$(window).width() / 2 - 205 
       }).show()
 
-      $(document).bind('keydown.facebox', function(e) {
-        if (e.keyCode == 27) $.facebox.close()
-        return true
-      })
+      if (!$.facebox.settings.modal) {
+        $(document).bind('keydown.facebox', function(e) {
+          if (e.keyCode == 27) {
+            $.facebox.close()
+          }
+          return true
+        })
+      }
       $(document).trigger('loading.facebox')
     },
 
@@ -291,8 +296,11 @@
 
     $('#facebox_overlay').hide().addClass("facebox_overlayBG")
       .css('opacity', $.facebox.settings.opacity)
-      .click(function() { $(document).trigger('close.facebox') })
       .fadeIn(200)
+      
+    if (!$.facebox.settings.modal)
+      $('#facebox_overlay').click(function() { $(document).trigger('close.facebox') })
+
     return false
   }
 
